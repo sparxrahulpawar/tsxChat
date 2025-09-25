@@ -3,6 +3,7 @@ import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import dotenv from "dotenv";
 import app from "./app.js";
+import connectDB from "./db/connection.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
@@ -33,4 +34,5 @@ io.on("connection", (socket) => {
 // Start server
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  connectDB();
 });
