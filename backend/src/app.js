@@ -6,7 +6,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import routes from "./routes/index.js";
 import errorHandler from "./middlewares/errorHandler.js";
-import AppError from "./utils/AppError.js";
+import AppError from "./utils/appError.js";
 
 const app = express();
 

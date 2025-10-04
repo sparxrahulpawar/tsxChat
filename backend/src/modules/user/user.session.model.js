@@ -14,9 +14,11 @@ const sessionSchema = new mongoose.Schema(
     },
     ipAddress: {
       type: String,
+      required: false,
     },
     userAgent: {
       type: String,
+      required: false,
     },
     expiresAt: {
       type: Date,

@@ -19,9 +19,25 @@ export const signup = async ({ fullname, email, password }) => {
     password: hashedPassword,
   });
 
+  // Generate token
+  const token = jwt.sign(
+    { id: user._id, email: user.email },
+    process.env.JWT_SECRET || "supeliuytyuiuoyuinrsec87956retkey",
+    { expiresIn: process.env.JWT_SECRET_TOKEN_EXPIRES_IN || "7d" }
+  );
+
+  // Create session
+  const session = await Session.create({
+    user: user._id,
+    token,
+    ipAddress: null,
+    userAgent: null,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+  });
+
   // don't return password in response
   user.password = undefined;
-  return user;
+  return { user, token };
 };
 
 export const login = async ({ email, password }) => {
@@ -43,12 +59,22 @@ export const login = async ({ email, password }) => {
   const session = await Session.create({
     user: user._id,
     token,
-    ipAddress,
-    userAgent,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 din
+    ipAddress: null,
+    userAgent: null,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
 
-  return { token, session };
+  // don't return password in response
+  user.password = undefined;
+  return { user, token };
+};
+
+export const getCurrentUser = async (userId) => {
+  const user = await User.findById(userId).select('-password');
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+  return user;
 };
 
 export const logout = async ({ token }) => {

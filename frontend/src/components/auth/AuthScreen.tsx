@@ -7,45 +7,32 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, MessageCircle, Users, Video, Phone } from 'lucide-react';
 
 interface AuthScreenProps {
-  onLogin: (userData: any) => void;
+  onLogin: (email: string, password: string) => void;
+  onRegister: (fullname: string, email: string, password: string) => void;
 }
 
-export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
+export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin, onRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [registerForm, setRegisterForm] = useState({
-    name: '', 
+    fullname: '', 
     email: '', 
     password: '', 
     confirmPassword: ''
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - in real app would validate with backend
-    onLogin({
-      id: '1',
-      name: loginForm.email.split('@')[0],
-      email: loginForm.email,
-      avatar: '👤',
-      status: 'online'
-    });
+    onLogin(loginForm.email, loginForm.password);
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (registerForm.password !== registerForm.confirmPassword) {
-      alert('Passwords do not match');
+      alert("Passwords do not match");
       return;
     }
-    // Mock registration - in real app would create account
-    onLogin({
-      id: '1',
-      name: registerForm.name,
-      email: registerForm.email,
-      avatar: '👤',
-      status: 'online'
-    });
+    onRegister(registerForm.fullname, registerForm.email, registerForm.password);
   };
 
   return (
@@ -95,7 +82,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               </TabsList>
               
               <TabsContent value="login" className="space-y-4">
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLoginSubmit} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -136,15 +123,15 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               </TabsContent>
               
               <TabsContent value="register" className="space-y-4">
-                <form onSubmit={handleRegister} className="space-y-4">
+                <form onSubmit={handleRegisterSubmit} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <Input
                       id="name"
                       type="text"
                       placeholder="Enter your full name"
-                      value={registerForm.name}
-                      onChange={(e) => setRegisterForm(prev => ({ ...prev, name: e.target.value }))}
+                      value={registerForm.fullname}
+                      onChange={(e) => setRegisterForm(prev => ({ ...prev, fullname: e.target.value }))}
                       required
                     />
                   </div>
